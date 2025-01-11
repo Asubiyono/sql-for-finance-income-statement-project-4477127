@@ -54,6 +54,20 @@ expenses AS(
       'interest'
     )
   GROUP BY date_part('year', payment_date)
+),
+cash_union AS(
+  SELECT * FROM loan_in
+  union all
+  select * FROM expenses
+  union all
+  select * FROM purchase
+  union all
+  select * FROM revenue
+), 
+cash_amount as(
+  SELECT period_year
+        , sum(total_amount) AS total_amount
+  FROM cash_union
+  GROUP BY period_year
 )
-SELECT *
-FROM expenses
+SELECT * FROM cash_amount
