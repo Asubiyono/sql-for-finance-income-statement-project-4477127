@@ -1,3 +1,6 @@
+cREATE MATERIALIZED VIEW account_cash AS
+
+
 WITH purchase_date AS(
   SELECT CASE
       WHEN payment_method = 'cash' then payment_at
@@ -70,4 +73,9 @@ cash_amount as(
   FROM cash_union
   GROUP BY period_year
 )
-SELECT * FROM cash_amount
+SELECT period_year, 
+      'Cash' AS account, 
+      total_amount AS original, 
+      sum(total_amount) over(ORDER BY period_year) AS total_amount
+FROM cash_amount
+
