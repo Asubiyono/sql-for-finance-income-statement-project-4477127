@@ -26,5 +26,11 @@ revenue AS(
           sum(total_amount) AS total_amount
   FROM revenue_date
   GROUP BY date_part('year',actual_payment_at)
+), 
+loan_in as(
+  select date_part('year', loan_at) AS period_year, 
+          sum(value) AS total_amount
+  FROM loans
+  GROUP BY date_part('year', loan_at)
 )
-SELECT * FROM revenue
+SELECT * FROM loan_in
