@@ -6,5 +6,17 @@ purchase_date AS(
   FROM purchases
   GROUP BY CASE WHEN payment_method = 'cash' then payment_at
     ELSE payment_at + interval '1 month' END
+), 
+purchase AS(
+  SELECT date_part('year',actual_payment_at) AS period_year,
+          sum(total_amount) AS total_amount
+  FROM purchase_date
+  GROUP BY date_part('year',actual_payment_at)
+),
+purchase AS(
+  SELECT date_part('year',actual_payment_at) AS period_year,
+          sum(total_amount) AS total_amount
+  FROM purchase_date
+  GROUP BY date_part('year',actual_payment_at)
 )
-SELECT * FROM purchase_date
+SELECT * FROM purchase
