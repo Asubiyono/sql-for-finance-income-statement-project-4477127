@@ -27,10 +27,17 @@ revenue AS(
   FROM revenue_date
   GROUP BY date_part('year',actual_payment_at)
 ), 
-loan_in as(
+loan_in AS(
   select date_part('year', loan_at) AS period_year, 
           sum(value) AS total_amount
   FROM loans
   GROUP BY date_part('year', loan_at)
+), 
+expenses AS(
+  select date_part('year', payment_date) AS period_year, 
+          - sum(amount) AS total_amount
+  FROM payments
+  WHERE payment_type in ('equipment', 'wage', 'rent', 'utility', 'tax', 'loan', 'interest')
+  GROUP BY date_part('year', payment_date)
 )
-SELECT * FROM loan_in
+SELECT * FROM expenses
