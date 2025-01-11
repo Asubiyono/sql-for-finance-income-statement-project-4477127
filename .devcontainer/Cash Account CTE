@@ -12,5 +12,19 @@ purchase AS(
           sum(total_amount) AS total_amount
   FROM purchase_date
   GROUP BY date_part('year',actual_payment_at)
+),
+revenue_date AS(
+  SELECT CASE WHEN payment_method = 'cash' then payment_at
+    ELSE payment_at + interval '1 month' END AS actual_payment_at, 
+    sum(quantity * price) AS total_amount
+  FROM sales
+  GROUP BY CASE WHEN payment_method = 'cash' then payment_at
+    ELSE payment_at + interval '1 month' END
+), 
+revenue AS(
+  SELECT date_part('year',actual_payment_at) AS period_year,
+          sum(total_amount) AS total_amount
+  FROM revenue_date
+  GROUP BY date_part('year',actual_payment_at)
 )
-SELECT * FROM purchase
+SELECT * FROM revenue
