@@ -1,0 +1,10 @@
+WITH
+purchase_date AS(
+  SELECT CASE WHEN payment_method = 'cash' then payment_at
+    ELSE payment_at + interval '1 month' END AS actual_payment_at, 
+    - sum(quantity * amount) AS total_amount
+  FROM purchases
+  GROUP BY CASE WHEN payment_method = 'cash' then payment_at
+    ELSE payment_at + interval '1 month' END
+)
+SELECT * FROM purchase_date
